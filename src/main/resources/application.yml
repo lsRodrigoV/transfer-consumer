@@ -1,23 +1,12 @@
 spring:
-  application:
-    name: transfer-consumer
-
   kafka:
-    bootstrap-servers: localhost:9092
-
     consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
       group-id: transfer-consumer-group
       auto-offset-reset: earliest
 
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
       properties:
-        # Delega para o JsonDeserializer
-        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-
-        #  CLASSE QUE O JSON SERÁ CONVERTIDO
-        spring.json.value.default.type: com.bank.consumer.domain.event.TransferCreatedEvent
-
-        # Pacotes confiáveis (mínimo necessário)
         spring.json.trusted.packages: com.bank.consumer.domain.event

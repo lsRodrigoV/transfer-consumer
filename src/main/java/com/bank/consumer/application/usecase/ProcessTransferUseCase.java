@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProcessTransferUseCase {
 
-    public void execute(TransferCreatedEvent event) {
+    public void execute(TransferCreatedEvent event) { //“Processar uma transferência recebida via evento”
 
         Transferencia transferencia = new Transferencia(
                 event.transferId(),

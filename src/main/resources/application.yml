@@ -3,10 +3,25 @@ spring:
     consumer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
       group-id: transfer-consumer-group
-      auto-offset-reset: earliest
+      enable-auto-commit: false #Controla quem confirma o processamento da mensagem. (mais seguro pois voce controla
+                                  #quando a mensagem foi realmente processada, deixando true ficaria a par do kafka marca o offset como lido tendo risco de perde a mensagem)
 
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer #O Kafka não sabe lidar com erro de deserialização sozinho, aqui estamos encapsulando os erros para que o spring faça
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer    #o tratamento do erro e o consumer continue rodando. Ele não desserializa de verdade, só protege.
 
       properties:
-        spring.json.trusted.packages: com.bank.consumer.domain.event
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+        spring.json.trusted.packages: com.bank.consumer.domain.event.* #Eu confio em qualquer classe dentro desse pacote para desserializar JSON.
+
+        spring.json.value.default.type: com.bank.consumer.domain.event.TransferCreatedEvent #Independente do que vier no header da mensagem, sempre transforme o JSON nesse tipo Java. (independente do que vier de producer
+        spring.json.use.type.headers: false #IGNORAR O TYPEHEADER                             #vai virar o type do consumer.
+                                              #o consumer recebe por padrão o header do producer,porem o Producer e Consumer não compartilham o mesmo pacote - resultando o consumer não ter esse pacote
+                                                  #Saindo "not in the trusted packages" e acusando erro. usando false você resolve o problema e retira o acoplamento.
+
+        #bootstrap-servers → onde está o Kafka
+        #group-id → quem consome
+        #enable-auto-commit=false → controle total
+        #ErrorHandlingDeserializer → proteção
+        #delegate.class → quem faz o trabalho real de desserializar o JSON.

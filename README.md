@@ -23,30 +23,6 @@ Domain Model
 
 This approach ensures low coupling, high cohesion, and clear ownership of responsibilities.
 
-Project Structure
-src/main/java
-├── application
-│   └── usecase
-│       └── ProcessTransferUseCase.java
-│
-├── domain
-│   ├── event
-│   │   └── TransferCreatedEvent.java
-│   └── model
-│       └── Transferencia.java
-│
-├── infrastructure
-│   └── kafka
-│       ├── TransferKafkaProducer.java
-│       └── TransferKafkaConsumer.java
-│
-├── config
-│   └── kafka
-│       └── KafkaConfig.java
-│
-└── controller
-    └── TransferController.java
-
  Architectural Principles Applied
 Application Use Cases
 Represent business intentions, not technical actions
@@ -97,8 +73,5 @@ Domain-Driven Design
 Event-driven systems
 
 
-LINK PRODUCER: https://github.com/lsRodrigoV/transfer-producer/
-
-
-
-
+👉 Consumer Service Repository
+https://github.com/lsRodrigoV/transfer-producer/
